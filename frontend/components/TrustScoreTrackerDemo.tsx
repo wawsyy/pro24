@@ -1,0 +1,223 @@
+"use client";
+
+import { useFhevm } from "../fhevm/useFhevm";
+import { useInMemoryStorage } from "../hooks/useInMemoryStorage";
+import { useRainbowEthersSigner } from "../hooks/rainbow/useRainbowEthersSigner";
+import { useTrustScoreTracker } from "@/hooks/useTrustScoreTracker";
+import { errorNotDeployed } from "./ErrorNotDeployed";
+import { useState } from "react";
+
+export const TrustScoreTrackerDemo = () => {
+  const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
+  const {
+    provider,
+    chainId,
+    accounts,
+    isConnected,
+    connect,
+    ethersSigner,
+    ethersReadonlyProvider,
+    sameChain,
+    sameSigner,
+    initialMockChains,
+  } = useRainbowEthersSigner();
+
+  const {
+    instance: fhevmInstance,
+    status: fhevmStatus,
+    error: fhevmError,
+  } = useFhevm({
+    provider,
+    chainId,
+    initialMockChains,
+    enabled: true,
+  });
+
+  const trustScoreTracker = useTrustScoreTracker({
+    instance: fhevmInstance,
+    fhevmDecryptionSignatureStorage,
+    eip1193Provider: provider,
+    chainId,
+    ethersSigner,
+    ethersReadonlyProvider,
+    sameChain,
+    sameSigner,
+  });
+
+  const [scoreInput, setScoreInput] = useState<string>("");
+
+  const buttonClass =
+    "inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg " +
+    "transition-all duration-200 hover:from-purple-700 hover:to-pink-700 hover:shadow-xl active:scale-95 " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 " +
+    "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed";
+
+  const inputClass =
+    "w-full px-4 py-3 rounded-lg border-2 border-purple-300 focus:border-purple-500 focus:outline-none " +
+    "transition-colors duration-200 text-lg";
+
+  const cardClass = "rounded-xl bg-white border-2 border-purple-200 shadow-lg p-6";
+
+  if (!isConnected) {
+    return (
+      <div className="mx-auto text-center">
+        <div className="mb-6">
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+            Encrypted Trust Score Tracker
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Record and track trust events privately with fully homomorphic encryption
+          </p>
+        </div>
+        <button
+          className={buttonClass + " text-xl px-8 py-4"}
+          onClick={connect}
+        >
+          Connect Rainbow Wallet
+        </button>
+      </div>
+    );
+  }
+
+  if (trustScoreTracker.isDeployed === false) {
+    return errorNotDeployed(chainId);
+  }
+
+  const handleRecordScore = () => {
+    const score = parseInt(scoreInput);
+    if (score >= 1 && score <= 10) {
+      trustScoreTracker.recordTrustEvent(score);
+      setScoreInput("");
+    } else {
+      alert("Please enter a score between 1 and 10");
+    }
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto px-4 space-y-6">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+          Encrypted Trust Score Tracker
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Build your private trust curve with encrypted scores
+        </p>
+      </div>
+
+      {/* Record Trust Event */}
+      <div className={cardClass}>
+        <h2 className="text-2xl font-bold text-purple-700 mb-4">Record Trust Event</h2>
+        <p className="text-gray-600 mb-4">
+          Record a trust event with a score from 1-10. Your score will be encrypted before storage.
+        </p>
+        <div className="flex gap-4">
+          <input
+            type="number"
+            min="1"
+            max="10"
+            value={scoreInput}
+            onChange={(e) => setScoreInput(e.target.value)}
+            placeholder="Enter score (1-10)"
+            className={inputClass}
+            disabled={!trustScoreTracker.canRecord}
+          />
+          <button
+            className={buttonClass}
+            disabled={!trustScoreTracker.canRecord || !scoreInput}
+            onClick={handleRecordScore}
+          >
+            {trustScoreTracker.isRecording
+              ? "Recording..."
+              : "Record Trust Event"}
+          </button>
+        </div>
+      </div>
+
+      {/* Trust Score Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className={cardClass}>
+          <h3 className="text-lg font-semibold text-purple-700 mb-2">Total Score</h3>
+          <p className="text-3xl font-bold text-purple-600">
+            {trustScoreTracker.clearTotal !== undefined
+              ? String(trustScoreTracker.clearTotal)
+              : "—"}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">Encrypted total</p>
+        </div>
+
+        <div className={cardClass}>
+          <h3 className="text-lg font-semibold text-purple-700 mb-2">Event Count</h3>
+          <p className="text-3xl font-bold text-purple-600">
+            {trustScoreTracker.eventCount > 0
+              ? trustScoreTracker.eventCount
+              : "—"}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">Total events</p>
+        </div>
+
+        <div className={cardClass}>
+          <h3 className="text-lg font-semibold text-purple-700 mb-2">Average Score</h3>
+          <p className="text-3xl font-bold text-purple-600">
+            {trustScoreTracker.clearAverage !== undefined
+              ? Number(trustScoreTracker.clearAverage).toFixed(1)
+              : "—"}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">Encrypted average</p>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <button
+          className={buttonClass}
+          disabled={!trustScoreTracker.canGetScores}
+          onClick={trustScoreTracker.refreshScores}
+        >
+          {trustScoreTracker.isRefreshing
+            ? "Refreshing..."
+            : "Refresh Scores"}
+        </button>
+        <button
+          className={buttonClass}
+          disabled={!trustScoreTracker.canDecrypt}
+          onClick={trustScoreTracker.decryptScores}
+        >
+          {trustScoreTracker.isDecrypting
+            ? "Decrypting..."
+            : "Decrypt Scores"}
+        </button>
+      </div>
+
+      {/* Trust Score History */}
+      {trustScoreTracker.trustScores.length > 0 && (
+        <div className={cardClass}>
+          <h2 className="text-2xl font-bold text-purple-700 mb-4">Trust Score History</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {trustScoreTracker.trustScores.map((score, idx) => (
+              <div
+                key={idx}
+                className="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 text-center"
+              >
+                <p className="text-sm text-gray-600 mb-1">Event #{idx + 1}</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {score.clear !== undefined ? String(score.clear) : "🔒"}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Status Message */}
+      {trustScoreTracker.message && (
+        <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
+          <p className="text-blue-800">{trustScoreTracker.message}</p>
+        </div>
+      )}
+
+      {/* Debug section removed per user request */}
+    </div>
+  );
+};
+
