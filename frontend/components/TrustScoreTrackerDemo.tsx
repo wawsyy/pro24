@@ -46,17 +46,11 @@ export const TrustScoreTrackerDemo = () => {
 
   const [scoreInput, setScoreInput] = useState<string>("");
 
-  const buttonClass =
-    "inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg " +
-    "transition-all duration-200 hover:from-purple-700 hover:to-pink-700 hover:shadow-xl active:scale-95 " +
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 " +
-    "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed";
+  const buttonClass = "fhe-button";
 
-  const inputClass =
-    "w-full px-4 py-3 rounded-lg border-2 border-purple-300 focus:border-purple-500 focus:outline-none " +
-    "transition-colors duration-200 text-lg";
+  const inputClass = "fhe-input";
 
-  const cardClass = "rounded-xl bg-white border-2 border-purple-200 shadow-lg p-6";
+  const cardClass = "fhe-card p-6";
 
   if (!isConnected) {
     return (
