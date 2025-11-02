@@ -25,6 +25,9 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @param inputProof The input proof for the encrypted score
     /// @dev The score is added to the user's trust history and updates their total
     function recordTrustEvent(externalEuint32 score, bytes calldata inputProof) external {
+        require(score.length > 0, "Score cannot be empty");
+        require(inputProof.length > 0, "Proof cannot be empty");
+        require(_userEventCount[msg.sender] < 1000, "Maximum trust events reached");
         euint32 encryptedScore = FHE.fromExternal(score, inputProof);
         
         // Add to user's trust scores array
