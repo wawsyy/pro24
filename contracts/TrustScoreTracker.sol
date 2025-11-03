@@ -98,5 +98,24 @@ contract TrustScoreTracker is SepoliaConfig {
         require(index < _userTrustScores[user].length, "Index out of bounds");
         return _userTrustScores[user][index];
     }
+
+    /// @notice Get multiple trust scores from a user's history within a range
+    /// @param user The address of the user
+    /// @param startIndex The starting index (inclusive)
+    /// @param endIndex The ending index (exclusive)
+    /// @return An array of encrypted trust scores
+    function getTrustScoreRange(address user, uint256 startIndex, uint256 endIndex) external view returns (euint32[] memory) {
+        require(startIndex < endIndex, "Invalid range");
+        require(endIndex <= _userTrustScores[user].length, "End index out of bounds");
+
+        uint256 length = endIndex - startIndex;
+        euint32[] memory scores = new euint32[](length);
+
+        for (uint256 i = 0; i < length; i++) {
+            scores[i] = _userTrustScores[user][startIndex + i];
+        }
+
+        return scores;
+    }
 }
 
