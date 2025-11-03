@@ -48,6 +48,69 @@ A privacy-preserving application for couples to record and track trust events us
 ### Developer Experience
 - **Type Safety**: Custom TypeScript types for trust score operations and better development experience
 - **Gas Optimization**: Optimized FHE operations by caching variables and reducing redundant calculations
+
+## 🚀 Deployment Instructions
+
+### Prerequisites
+- Node.js v18+
+- npm or yarn
+- Git
+- MetaMask or Rainbow Wallet
+
+### Local Development Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/wawsyy/pro24.git
+   cd pro24
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   cd frontend && npm install && cd ..
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   # Copy and configure environment files
+   cp .env.example .env
+   # Add your private keys and API keys
+   ```
+
+4. **Start local blockchain**
+   ```bash
+   npx hardhat node
+   ```
+
+5. **Deploy contracts**
+   ```bash
+   npx hardhat deploy --network localhost
+   ```
+
+6. **Start frontend development server**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+### Production Deployment
+
+1. **Deploy to Sepolia testnet**
+   ```bash
+   npx hardhat deploy --network sepolia
+   ```
+
+2. **Build frontend for production**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+3. **Deploy to Vercel/Netlify**
+   ```bash
+   # Configure your hosting platform with the built files
+   ```
 - **Comprehensive Testing**: Full test coverage including edge cases, limits, and integration tests
 - **Error Handling**: Improved error messages, recovery mechanisms, and user feedback
 - **Code Quality**: ESLint, Prettier, and comprehensive linting rules
