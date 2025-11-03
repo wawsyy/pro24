@@ -12,14 +12,18 @@ export default function Home() {
           <p className="text-gray-600 text-lg">Secure, private trust tracking with fully homomorphic encryption</p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full">
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">FHE Counter</h2>
-            <FHECounterDemo />
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 text-center">FHE Counter</h2>
+            <div className="w-full max-w-md">
+              <FHECounterDemo />
+            </div>
           </div>
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Trust Score Tracker</h2>
-            <TrustScoreTrackerDemo />
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 text-center">Trust Score Tracker</h2>
+            <div className="w-full max-w-md">
+              <TrustScoreTrackerDemo />
+            </div>
           </div>
         </div>
       </div>
