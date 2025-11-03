@@ -8,6 +8,10 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 /// @notice A contract for couples to record trust events with encrypted scores
 /// @dev All trust scores are encrypted using FHE, protecting privacy while allowing encrypted operations
 contract TrustScoreTracker is SepoliaConfig {
+    /// @notice Emitted when a new trust event is recorded
+    /// @param user The address of the user who recorded the event
+    /// @param eventCount The updated event count for the user
+    event TrustEventRecorded(address indexed user, uint32 eventCount);
     // Mapping from user address to array of encrypted trust scores
     mapping(address => euint32[]) private _userTrustScores;
     
@@ -53,6 +57,9 @@ contract TrustScoreTracker is SepoliaConfig {
             FHE.allowThis(_userAverageScore[msg.sender]);
             FHE.allow(_userAverageScore[msg.sender], msg.sender);
         }
+
+        // Emit event for tracking
+        emit TrustEventRecorded(msg.sender, eventCount);
     }
 
     /// @notice Get the encrypted total trust score for a user
