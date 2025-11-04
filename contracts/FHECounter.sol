@@ -13,7 +13,10 @@ contract FHECounter is SepoliaConfig {
     /// @notice Returns the current count
     /// @return The current encrypted count
     function getCount() external view returns (euint32) {
-        return _count;
+        euint32 count = _count;
+        FHE.allowThis(count);
+        FHE.allow(count, msg.sender);
+        return count;
     }
 
     /// @notice Increments the counter by a specified encrypted value.
