@@ -77,6 +77,17 @@ export const TrustScoreTrackerDemo = () => {
     return errorNotDeployed(chainId);
   }
 
+  if (fhevmStatus === "loading") {
+    return (
+      <div className={cardClass}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+          <span className="ml-3 text-gray-600">Initializing FHEVM...</span>
+        </div>
+      </div>
+    );
+  }
+
   const handleRecordScore = () => {
     const score = parseInt(scoreInput);
     if (score >= 1 && score <= 10) {
