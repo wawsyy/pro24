@@ -45,6 +45,7 @@ export const TrustScoreTrackerDemo = () => {
   });
 
   const [scoreInput, setScoreInput] = useState<string>("");
+  const [validationError, setValidationError] = useState<string>("");
 
   const buttonClass = "fhe-button";
 
@@ -89,13 +90,26 @@ export const TrustScoreTrackerDemo = () => {
   }
 
   const handleRecordScore = () => {
-    const score = parseInt(scoreInput);
-    if (score >= 1 && score <= 10) {
-      trustScoreTracker.recordTrustEvent(score);
-      setScoreInput("");
-    } else {
-      alert("Please enter a score between 1 and 10");
+    setValidationError("");
+
+    if (!scoreInput.trim()) {
+      setValidationError("Please enter a trust score");
+      return;
     }
+
+    const score = parseInt(scoreInput);
+    if (isNaN(score)) {
+      setValidationError("Please enter a valid number");
+      return;
+    }
+
+    if (score < 1 || score > 10) {
+      setValidationError("Trust score must be between 1 and 10");
+      return;
+    }
+
+    trustScoreTracker.recordTrustEvent(score);
+    setScoreInput("");
   };
 
   return (
@@ -116,26 +130,40 @@ export const TrustScoreTrackerDemo = () => {
         <p className="text-gray-600 mb-4">
           Record a trust event with a score from 1-10. Your score will be encrypted before storage.
         </p>
-        <div className="flex gap-4">
-          <input
-            type="number"
-            min="1"
-            max="10"
-            value={scoreInput}
-            onChange={(e) => setScoreInput(e.target.value)}
-            placeholder="Enter score (1-10)"
-            className={inputClass}
-            disabled={!trustScoreTracker.canRecord}
-          />
-          <button
-            className={buttonClass}
-            disabled={!trustScoreTracker.canRecord || !scoreInput}
-            onClick={handleRecordScore}
-          >
-            {trustScoreTracker.isRecording
-              ? "Recording..."
-              : "Record Trust Event"}
-          </button>
+        <div className="space-y-3">
+          <div className="flex gap-4">
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={scoreInput}
+              onChange={(e) => {
+                setScoreInput(e.target.value);
+                setValidationError(""); // Clear error on input change
+              }}
+              placeholder="Enter score (1-10)"
+              className={`${inputClass} ${validationError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
+              disabled={!trustScoreTracker.canRecord}
+              onKeyPress={(e) => e.key === 'Enter' && handleRecordScore()}
+            />
+            <button
+              className={buttonClass}
+              disabled={!trustScoreTracker.canRecord || !scoreInput.trim()}
+              onClick={handleRecordScore}
+            >
+              {trustScoreTracker.isRecording
+                ? "Recording..."
+                : "Record Trust Event"}
+            </button>
+          </div>
+          {validationError && (
+            <p className="text-red-600 text-sm flex items-center">
+              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {validationError}
+            </p>
+          )}
         </div>
       </div>
 
