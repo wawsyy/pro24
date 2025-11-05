@@ -1,7 +1,7 @@
 {
     "name":  "encrypted-trust-score-tracker",
     "description":  "Encrypted Trust Score Tracker - Privacy-preserving trust event recording using FHEVM",
-    "version":  "1.0.0",
+    "version":  "1.0.82",
     "engines":  {
                     "node":  "\u003e=20",
                     "npm":  "\u003e=7.0.0"
