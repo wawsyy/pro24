@@ -71,6 +71,7 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @param user The address of the user
     /// @return The encrypted total trust score
     function getTotalTrustScore(address user) external view returns (euint32) {
+        require(user != address(0), "Invalid user address");
         return _userTotalScore[user];
     }
 
@@ -85,6 +86,7 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @param user The address of the user
     /// @return The encrypted average trust score (total / count)
     function getAverageTrustScore(address user) external view returns (euint32) {
+        require(user != address(0), "Invalid user address");
         return _userAverageScore[user];
     }
 
