@@ -12,6 +12,11 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @param user The address of the user who recorded the event
     /// @param eventCount The updated event count for the user
     event TrustEventRecorded(address indexed user, uint32 eventCount);
+
+    /// @notice Emitted when trust scores are queried
+    /// @param user The address of the user whose scores were queried
+    /// @param queryType The type of query performed (0: single, 1: range)
+    event TrustScoreQueried(address indexed user, uint8 queryType);
     // Mapping from user address to array of encrypted trust scores
     mapping(address => euint32[]) private _userTrustScores;
     
@@ -96,6 +101,7 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @return The encrypted trust score at the specified index
     function getTrustScoreByIndex(address user, uint256 index) external view returns (euint32) {
         require(index < _userTrustScores[user].length, "Index out of bounds");
+        emit TrustScoreQueried(user, 0);
         return _userTrustScores[user][index];
     }
 
@@ -115,6 +121,7 @@ contract TrustScoreTracker is SepoliaConfig {
             scores[i] = _userTrustScores[user][startIndex + i];
         }
 
+        emit TrustScoreQueried(user, 1);
         return scores;
     }
 }
