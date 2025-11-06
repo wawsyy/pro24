@@ -29,6 +29,9 @@ contract TrustScoreTracker is SepoliaConfig {
     // Mapping from user address to count of trust events (plaintext for division)
     mapping(address => uint32) private _userEventCount;
 
+    // Mapping from user address to last activity timestamp
+    mapping(address => uint32) private _userLastActivity;
+
     /// @notice Record a new trust event with an encrypted score
     /// @param score The encrypted trust score (typically 1-10)
     /// @param inputProof The input proof for the encrypted score
@@ -49,6 +52,9 @@ contract TrustScoreTracker is SepoliaConfig {
         
         // Increment event count (plaintext)
         _userEventCount[msg.sender] += 1;
+
+        // Update last activity timestamp
+        _userLastActivity[msg.sender] = uint32(block.timestamp);
         
         // Allow contract and user to access the encrypted values
         FHE.allowThis(_userTotalScore[msg.sender]);
@@ -94,7 +100,16 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @param user The address of the user
     /// @return The number of trust events recorded
     function getTrustEventArrayLength(address user) external view returns (uint256) {
+        require(user != address(0), "Invalid user address");
         return _userTrustScores[user].length;
+    }
+
+    /// @notice Get the last activity timestamp for a user
+    /// @param user The address of the user
+    /// @return The timestamp of the user's last trust event recording
+    function getLastActivityTimestamp(address user) external view returns (uint32) {
+        require(user != address(0), "Invalid user address");
+        return _userLastActivity[user];
     }
 
     /// @notice Get a specific encrypted trust score from a user's history by index
