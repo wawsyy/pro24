@@ -46,6 +46,7 @@ export const TrustScoreTrackerDemo = () => {
 
   const [scoreInput, setScoreInput] = useState<string>("");
   const [validationError, setValidationError] = useState<string>("");
+  const [showHistory, setShowHistory] = useState<boolean>(false);
 
   const buttonClass = "fhe-button";
 
@@ -222,8 +223,20 @@ export const TrustScoreTrackerDemo = () => {
         </button>
       </div>
 
-      {/* Trust Score History */}
+      {/* History Toggle */}
       {trustScoreTracker.trustScores.length > 0 && (
+        <div className="flex justify-center">
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`${buttonClass} text-sm px-4 py-2`}
+          >
+            {showHistory ? 'Hide History' : 'Show Trust History'}
+          </button>
+        </div>
+      )}
+
+      {/* Trust Score History */}
+      {trustScoreTracker.trustScores.length > 0 && showHistory && (
         <div className={cardClass}>
           <h2 className="text-2xl font-bold text-purple-700 mb-4">Trust Score History</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
