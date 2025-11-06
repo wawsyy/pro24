@@ -183,5 +183,24 @@ describe("TrustScoreTracker", function () {
       expect(clearScore).to.eq(scores[i]);
     }
   });
+
+  it("should track last activity timestamp", async function () {
+    const score = 8;
+
+    // Record a trust event
+    const encryptedScore = await fhevm
+      .createEncryptedInput(contractAddress, signers.alice.address)
+      .add32(score)
+      .encrypt();
+
+    const tx = await trustScoreTracker
+      .connect(signers.alice)
+      .recordTrustEvent(encryptedScore.handles[0], encryptedScore.inputProof);
+    await tx.wait();
+
+    // Verify timestamp was recorded (should be greater than 0)
+    const lastActivity = await trustScoreTracker.getLastActivityTimestamp(signers.alice.address);
+    expect(lastActivity).to.be.gt(0);
+  });
 });
 
