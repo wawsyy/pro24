@@ -55,7 +55,7 @@ export function NetworkToggle() {
 
   // Get current network
   const currentNetwork = Object.entries(NETWORKS).find(
-    ([_, network]) => network.chainId === chainId
+    ([, network]) => network.chainId === chainId
   )?.[0] as SupportedNetwork | undefined;
 
   const currentNetworkLabel = currentNetwork

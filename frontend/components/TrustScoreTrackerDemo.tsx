@@ -284,7 +284,7 @@ export const TrustScoreTrackerDemo = () => {
               // In a real implementation, this would validate using FHE
               setValidationResult(true);
               setValidationError("");
-            } catch (error) {
+            } catch (_error) {
               setValidationError("Validation failed");
               setValidationResult(false);
             } finally {
