@@ -107,6 +107,18 @@ export const TrustScoreTrackerDemo = () => {
       return;
     }
 
+    // Check if wallet is connected and ready
+    if (!trustScoreTracker.canRecord) {
+      if (!isConnected) {
+        setValidationError("Please connect your wallet first");
+      } else if (!trustScoreTracker.address) {
+        setValidationError("Contract not deployed on this network");
+      } else {
+        setValidationError("Please wait for the system to be ready");
+      }
+      return;
+    }
+
     trustScoreTracker.recordTrustEvent(score);
     setScoreInput("");
   };
@@ -146,7 +158,7 @@ export const TrustScoreTrackerDemo = () => {
             />
             <button
               className={buttonClass}
-              disabled={!trustScoreTracker.canRecord || !scoreInput.trim()}
+              disabled={!scoreInput.trim() || trustScoreTracker.isRecording}
               onClick={handleRecordScore}
             >
               {trustScoreTracker.isRecording
