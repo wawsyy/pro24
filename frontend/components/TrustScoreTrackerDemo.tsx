@@ -12,7 +12,6 @@ export const TrustScoreTrackerDemo = () => {
   const {
     provider,
     chainId,
-    accounts,
     isConnected,
     connect,
     ethersSigner,
@@ -25,7 +24,6 @@ export const TrustScoreTrackerDemo = () => {
   const {
     instance: fhevmInstance,
     status: fhevmStatus,
-    error: fhevmError,
   } = useFhevm({
     provider,
     chainId,
