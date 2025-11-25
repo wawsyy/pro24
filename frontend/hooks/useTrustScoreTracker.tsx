@@ -316,10 +316,15 @@ export const useTrustScoreTracker = (parameters: {
         }
 
         // Update individual scores
-        const updatedScores = trustScores.map((score) => ({
-          ...score,
-          clear: res[score.handle] !== undefined ? res[score.handle] : score.clear,
-        }));
+        const updatedScores = trustScores.map((score) => {
+          const decryptedValue = res[score.handle];
+          return {
+            ...score,
+            clear: decryptedValue !== undefined && typeof decryptedValue === 'bigint' 
+              ? decryptedValue 
+              : score.clear,
+          };
+        });
         setTrustScores(updatedScores);
 
         setMessage("Trust scores decrypted successfully!");
