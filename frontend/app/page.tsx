@@ -4,6 +4,9 @@ import { TrustScoreTrackerDemo } from "@/components/TrustScoreTrackerDemo";
 import { FHECounterDemo } from "@/components/FHECounterDemo";
 import { useState } from "react";
 
+// Force dynamic rendering to avoid static generation issues with client-side hooks
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const [isDark, setIsDark] = useState(false);
 
