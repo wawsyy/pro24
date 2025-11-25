@@ -1,3 +1,5 @@
+"use client";
+
 import { TrustScoreTrackerDemo } from "@/components/TrustScoreTrackerDemo";
 import { FHECounterDemo } from "@/components/FHECounterDemo";
 import { useState } from "react";
