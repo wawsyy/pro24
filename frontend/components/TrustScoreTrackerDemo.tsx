@@ -111,7 +111,7 @@ export const TrustScoreTrackerDemo = () => {
     if (!trustScoreTracker.canRecord) {
       if (!isConnected) {
         setValidationError("Please connect your wallet first");
-      } else if (!trustScoreTracker.address) {
+      } else if (!trustScoreTracker.contractAddress) {
         setValidationError("Contract not deployed on this network");
       } else {
         setValidationError("Please wait for the system to be ready");
