@@ -141,8 +141,7 @@ export const TrustScoreTrackerDemo = () => {
                 setValidationError(""); // Clear error on input change
               }}
               placeholder="Enter score (1-10)"
-              className={`${inputClass} ${validationError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-              disabled={!trustScoreTracker.canRecord}
+              className={`${inputClass} ${validationError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''} ${!trustScoreTracker.canRecord ? 'opacity-60' : ''}`}
               onKeyPress={(e) => e.key === 'Enter' && handleRecordScore()}
             />
             <button
