@@ -13,10 +13,7 @@ contract FHECounter is SepoliaConfig {
     /// @notice Returns the current count
     /// @return The current encrypted count
     function getCount() external view returns (euint32) {
-        euint32 count = _count;
-        FHE.allowThis(count);
-        FHE.allow(count, msg.sender);
-        return count;
+        return _count;
     }
 
     /// @notice Increments the counter by a specified encrypted value.
@@ -25,7 +22,6 @@ contract FHECounter is SepoliaConfig {
     /// @dev This example omits overflow/underflow checks for simplicity and readability.
     /// In a production contract, proper range checks should be implemented.
     function increment(externalEuint32 inputEuint32, bytes calldata inputProof) external {
-        require(inputEuint32.length > 0, "Input cannot be empty");
         require(inputProof.length > 0, "Proof cannot be empty");
         euint32 encryptedEuint32 = FHE.fromExternal(inputEuint32, inputProof);
 
@@ -41,7 +37,6 @@ contract FHECounter is SepoliaConfig {
     /// @dev This example omits overflow/underflow checks for simplicity and readability.
     /// In a production contract, proper range checks should be implemented.
     function decrement(externalEuint32 inputEuint32, bytes calldata inputProof) external {
-        require(inputEuint32.length > 0, "Input cannot be empty");
         require(inputProof.length > 0, "Proof cannot be empty");
         euint32 encryptedEuint32 = FHE.fromExternal(inputEuint32, inputProof);
 

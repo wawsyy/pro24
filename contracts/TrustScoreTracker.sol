@@ -37,7 +37,6 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @param inputProof The input proof for the encrypted score
     /// @dev The score is added to the user's trust history and updates their total
     function recordTrustEvent(externalEuint32 score, bytes calldata inputProof) external {
-        require(score.length > 0, "Score cannot be empty");
         require(inputProof.length > 0, "Proof cannot be empty");
         require(_userEventCount[msg.sender] < 1000, "Maximum trust events reached");
         euint32 encryptedScore = FHE.fromExternal(score, inputProof);
@@ -118,7 +117,6 @@ contract TrustScoreTracker is SepoliaConfig {
     /// @return The encrypted trust score at the specified index
     function getTrustScoreByIndex(address user, uint256 index) external view returns (euint32) {
         require(index < _userTrustScores[user].length, "Index out of bounds");
-        emit TrustScoreQueried(user, 0);
         return _userTrustScores[user][index];
     }
 
@@ -138,7 +136,6 @@ contract TrustScoreTracker is SepoliaConfig {
             scores[i] = _userTrustScores[user][startIndex + i];
         }
 
-        emit TrustScoreQueried(user, 1);
         return scores;
     }
 }
