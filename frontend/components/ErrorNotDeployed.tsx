@@ -1,12 +1,14 @@
+import { ReactElement } from "react";
+
 interface ErrorNotDeployedProps {
   contractName: string;
   chainId: number | undefined;
 }
 
-export function errorNotDeployed(chainId: number | undefined): JSX.Element;
-export function errorNotDeployed(props: ErrorNotDeployedProps): JSX.Element;
+export function errorNotDeployed(chainId: number | undefined): ReactElement;
+export function errorNotDeployed(props: ErrorNotDeployedProps): ReactElement;
 
-export function errorNotDeployed(chainIdOrProps: number | undefined | ErrorNotDeployedProps) {
+export function errorNotDeployed(chainIdOrProps: number | undefined | ErrorNotDeployedProps): ReactElement {
   const chainId = typeof chainIdOrProps === 'object' ? chainIdOrProps.chainId : chainIdOrProps;
   const contractName = typeof chainIdOrProps === 'object' ? chainIdOrProps.contractName : 'FHECounter.sol';
 
