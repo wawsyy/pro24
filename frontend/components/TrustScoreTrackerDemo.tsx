@@ -24,6 +24,7 @@ export const TrustScoreTrackerDemo = () => {
   const {
     instance: fhevmInstance,
     status: fhevmStatus,
+    error: fhevmError,
   } = useFhevm({
     provider,
     chainId,
@@ -111,6 +112,10 @@ export const TrustScoreTrackerDemo = () => {
     if (!trustScoreTracker.canRecord) {
       if (!isConnected) {
         setValidationError("Please connect your wallet first");
+      } else if (fhevmStatus === "error") {
+        setValidationError("FHEVM initialization failed. Please check the error message above and try again.");
+      } else if (fhevmStatus !== "ready") {
+        setValidationError("FHEVM is still initializing. Please wait...");
       } else if (!trustScoreTracker.contractAddress) {
         setValidationError("Contract not deployed on this network");
       } else {
@@ -134,6 +139,30 @@ export const TrustScoreTrackerDemo = () => {
           Build your private trust curve with encrypted scores
         </p>
       </div>
+
+      {/* FHEVM Error Display */}
+      {fhevmStatus === "error" && fhevmError && (
+        <div className={`${cardClass} border-2 border-red-300 bg-red-50`}>
+          <div className="flex items-start gap-3">
+            <svg className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-red-800 mb-2">FHEVM Initialization Error</h3>
+              <p className="text-red-700 mb-2">
+                {(fhevmError.message?.includes("relayer") || fhevmError.message?.includes("keyurl") || fhevmError.message?.includes("CONNECTION_CLOSED"))
+                  ? "Unable to connect to FHEVM Relayer service. The relayer service may be temporarily unavailable. Please try again later."
+                  : fhevmError.message || "Failed to initialize FHEVM. Please refresh the page and try again."}
+              </p>
+              {(fhevmError.message?.includes("relayer") || fhevmError.message?.includes("keyurl") || fhevmError.message?.includes("CONNECTION_CLOSED")) && (
+                <p className="text-sm text-red-600 mt-2">
+                  <strong>Note:</strong> This is usually a temporary issue with the Zama relayer service. The application will automatically retry when you refresh the page.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Record Trust Event */}
       <div className={cardClass}>
